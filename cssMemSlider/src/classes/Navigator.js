@@ -1,18 +1,19 @@
-import {DivElement} from './DivElement.js';
+import { DivElement } from './DivElement.js';
 
 export class Navigator {
-  constructor(className = "", itemNumber = 4) {
-    this.className = className;
-    this.itemNumber = itemNumber;
-  }
-
-  create() {
-    this.elem = new DivElement("navigator__container").create();
-    for (let index = 0; index <= this.itemNumber; index += 1) {
-      const item = new DivElement("navigator__item").create();
-      item.id = `mem${index}`;
-      this.elem.appendChild(item);
+    constructor(className = "") {
+        this.className = className;
     }
-    return this.elem;
-  }
+
+    create(itemNumber) {
+        this.elem = new DivElement("navigator__container").create();
+        for (let index = 0; index <= itemNumber; index += 1) {
+            const itemWrapper = new DivElement("navigator_item__wrapper").create();
+            itemWrapper.id = `mem${index}`;
+            const item = new DivElement("navigator__item").create();
+            itemWrapper.appendChild(item);
+            this.elem.appendChild(itemWrapper);
+        }
+        return this.elem;
+    }
 }

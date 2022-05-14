@@ -1,8 +1,11 @@
-import { pathToMems, memsList } from "./memsList.js";
+import { memsList, pathToMems } from "./memsList.js";
 import { DivElement } from "./classes/DivElement.js";
 import { Navigator } from "./classes/Navigator.js";
+import { Ball } from "./classes/Ball.js";
 
 let currentMemId = "mem1";
+
+let ball = null;
 
 //!! ***************class
 class MemWrapper {
@@ -19,112 +22,106 @@ class MemWrapper {
     const screenFrame = new DivElement("screen__frame").create();
     innerContainer.appendChild(screenFrame);
 
-    const slidersContainer = new DivElement("sliders__container").create();
-    screenFrame.appendChild(slidersContainer);
+    const framePicture = new DivElement("mem__frame").create();
+    framePicture.id = "center";
+    screenFrame.appendChild(framePicture);
 
-    const framePicture = slidersContainer.appendChild(
-      new DivElement("picture__frame").create()
-    );
+    const screenTitle = new DivElement("screen_title_wrapper").create();
+    const title = document.createElement("input");
+    title.type = "text";
+    title.id = "title";
+    screenTitle.appendChild(title);
+    innerContainer.appendChild(screenTitle);
 
-    const navigator = new Navigator("navigation", 3).create();
+    let memNumbers = Object.keys(memsList).length;
+    const navigator = new Navigator("navigation", memNumbers).create(memNumbers-1);
     innerContainer.appendChild(navigator);
 
-    const screenTitle = new DivElement("screen__title").create();
-    innerContainer.appendChild(screenTitle);
+    ball = new Ball(document.body);
 
     return this.fragment;
   }
 }
 
+//!! *************** shiftTitle
+function shiftTitle(id, newTitleValue){
+const title =document.getElementById('title');
+title.classList.add('title_animated');
+title.addEventListener('transitionend', (ev)=>{
+    title.value = memsList[currentMemId].title;
+    
+    title.classList.remove('title_animated');
+})
+}
+
 //!! *************** function
-function itemSelect(ev) {
+function navItemSChoice(ev) {
   if (!ev.target) {
     return;
   }
-  if (!ev.target.classList.contains("navigator__item")) {
-    return;
+  let selectedNavItem = null;
+  if (ev.target.classList.contains("navigator_item__wrapper")) {
+    selectedNavItem = ev.target;
+  } else if (
+    ev.target.parentNode.classList.contains("navigator_item__wrapper")
+  ) {
+    selectedNavItem = ev.target.parentNode;
   }
 
-  const selectedNavItem = ev.target;
+  const id = selectedNavItem.id;
+  ball.showBall(ev);
+  document.addEventListener("mousemove", (ev) => {
+    ball.follow(ev);
+  });
 
-  if (currentMemId === selectedNavItem.id) {
+
+  if (currentMemId === id) {
     console.log("nothing to do");
     return;
   }
-  const nav = ev.currentTarget;
+  window.localStorage.setItem("currentMemId", id);
 
-  // TODO ************ не работает *************debugSection  START*/
-  let debugSection = false;
-  if (debugSection) {
-    let ball = new Ball().create(nav);
-    ball.style.top = `${ev.clientY - 15}px`;
-    ball.style.left = `${ev.clientX - 15}px`;
-    ball.classList.add("ball_animated");
-    ball.addEventListener("transitionend", (ev) => {
-      console.log(ev);
-      ball.classList.remove("ball_animated");
-      ball.remove();
-      // ball = null;
-    });
+  setNavItemActive(id);
+  currentMemId = id;
+  const title = document.getElementById("title");
+//   title.value = memsList[currentMemId].title;
+
+  const currentMem = document.getElementById("center");
+  if (currentMem.dataset.memId < currentMemId) {
+    shiftMem("next", id);
+  } else {
+    shiftMem("prev", id);
   }
-  // TODO ************ не работает *************debugSection END */
-
-  currentMemId = selectedNavItem.id;
-  window.localStorage.setItem("currentMemId", selectedNavItem.id);
-
-  setNavActiveItem(selectedNavItem.id);
-  const pictureFrame = document.querySelector(".picture__frame");
-
-  // console.log('pictureFrame.dataset.memId=', pictureFrame.dataset.memId);
-
-  setUrlMem(selectedNavItem.id, pictureFrame);
-  changeMem(selectedNavItem.id);
+  shiftTitle(id, memsList[currentMemId].title);
 }
 
-//!! *************** setNavActiveItem
-function setNavActiveItem(id) {
-  //**reset nav items */
-  const items = document.querySelectorAll(".navigator__item");
+//!! *************** setNavItemActive
+function setNavItemActive(id) {
+  const items = document.querySelectorAll(".navigator_item__wrapper");
   Object.keys(items).forEach((key) => {
     items[key].classList.remove("navigator__item_active");
   });
   document.getElementById(id).classList.add("navigator__item_active");
-
-  
 }
 
-//!! *************** setNavActiveItem
-function changeMem(id) {
+//!! *************** shiftMem
+function shiftMem(direction, id) {
+  const currentMem = document.getElementById("center");
+  const clone = currentMem.cloneNode(true);
+  clone.id = "new";
+  clone.classList.add(`${direction}_mem`);
+  setUrlMem(id, clone);
+  currentMem.insertAdjacentElement(
+    direction == "next" ? "afterEnd" : "beforeBegin",
+    clone
+  );
 
-  const currentMem = document.querySelector(".picture__frame");
-  const cloneMem = currentMem.cloneNode(true);
-  cloneMem.dataset.memId = id;
-  const slider = document.querySelector(".sliders__container");
-  setUrlMem(id, cloneMem);
-  const title = document.querySelector('.screen__title');
-  title.textContent = memsList[id].title;
-  
-// if (id < currentMem.id) {
-//   slider.insertAdjacentElement('beforebegin', currentMem);
-// }
-// else {
-//   slider.insertAdjacentElement('afterend', currentMem);
-// }
-
-
-  if (currentMem.dataset.memId < currentMemId) {
-    //добавить картинку справа
-    console.log("show next", "добавить картинку справа");
-
-    slider.classList.add("sliders__container_next");
-  } else {
-    //добавить картинку слева
-    console.log("show prev", "добавить картинку слева");
-    slider.classList.add("sliders__container_prev");
-  }
-  
+  clone.addEventListener("animationend", () => {
+    document.getElementById("center").remove();
+    clone.classList.remove(`${direction}_mem`);
+    clone.id = "center";
+  });
 }
-
 //!! *************** setUrlMem
 function setUrlMem(id, imgNode) {
   imgNode.style.backgroundImage = `url(${pathToMems}${memsList[id].imgUrl})`;
@@ -133,7 +130,12 @@ function setUrlMem(id, imgNode) {
 
 //!! *************** screenTitleSelect
 function screenTitleSelect(ev) {
-  console.log("screenTitleSelect");
+  if (ev.type === "mousedown") {
+    ball.showBall(ev);
+    document.addEventListener("mousemove", (ev) => {
+      ball.follow(ev);
+    });
+  }
 }
 
 //!! *************** main code
@@ -145,16 +147,26 @@ document.addEventListener("DOMContentLoaded", () => {
     currentMemId = "mem1";
   }
 
-  setNavActiveItem(currentMemId);
-  document.querySelector(".picture__frame").dataset.memId = currentMemId;
-  const title = document.querySelector('.screen__title');
-  title.textContent = memsList[currentMemId].title;
+  setNavItemActive(currentMemId);
+  setUrlMem(currentMemId, document.getElementById("center"));
+  document.getElementById("center").dataset.memId = currentMemId;
+
+  const title = document.getElementById("title");
+  title.value = memsList[currentMemId].title;
+  title.addEventListener("mousedown", screenTitleSelect);
+  title.addEventListener("change", (ev) => {
+    console.log(ev.type);
+    memsList[currentMemId].title = title.value;
+  });
 
   const nav = document.querySelector(".navigator__container");
-  nav.addEventListener("click", itemSelect);
+  nav.addEventListener("mousedown", navItemSChoice);
 
-  const screenTitle = document.querySelector(".screen__title");
-  screenTitle.addEventListener("click", screenTitleSelect);
+  document.getElementById("ball").addEventListener("mouseup", () => {
+    ball.hideBall();
+  });
+
+  const screenTitle = document.getElementById("title");
   screenTitle.addEventListener("dblclick", () => {
     return false;
   });
