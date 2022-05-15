@@ -17,6 +17,7 @@ module.exports = {
         'max-classes-per-file': ['error', 5],
         'import/extensions': 0,
         indent: ['error', 4],
+        'eol-last': 0,
     },
     extends: 'airbnb-base',
 };

@@ -5,7 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
     context: path.resolve(__dirname, 'src'),
     mode: 'development',
-    entry: './js/app.js',
+    entry: './app.js',
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'app.[hash].js',
@@ -37,6 +37,7 @@ module.exports = {
                 test: /\.wav$/,
                 loader: 'file-loader',
             },
+
         ],
     },
 };

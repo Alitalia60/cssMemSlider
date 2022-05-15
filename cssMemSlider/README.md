@@ -9,7 +9,4 @@ then run webpack in development mode
 source files:  ./src
 built files: ./dist 
 
-To change language by virtual keys press **Win + Space**
-or click on **languge indicator**
-
 

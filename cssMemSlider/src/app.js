@@ -1,7 +1,9 @@
 import { memsList, pathToMems } from './memsList.js';
-import { DivElement } from '../classes/DivElement.js';
-import { Navigator } from '../classes/Navigator.js';
-import { Ball } from '../classes/Ball.js';
+import { DivElement } from './classes/DivElement.js';
+import { Navigator } from './classes/Navigator.js';
+import { Ball } from './classes/Ball.js';
+
+// import './css/style.css';
 
 let currentMemId = 'mem1';
 
