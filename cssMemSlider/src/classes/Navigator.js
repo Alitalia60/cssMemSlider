@@ -1,4 +1,4 @@
-import { DivElement } from './DivElement.js';
+import DivElement from './DivElement.js';
 
 export default class Navigator {
     constructor(className = '') {
