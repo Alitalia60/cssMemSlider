@@ -1,7 +1,7 @@
 import { memsList, pathToMems } from './memsList.js';
 import { DivElement } from './classes/DivElement.js';
-import { Navigator } from './classes/Navigator.js';
-import { Ball } from './classes/Ball.js';
+import Navigator from './classes/Navigator.js';
+import Ball from './classes/Ball.js';
 
 // import './css/style.css';
 
@@ -61,6 +61,8 @@ function setNavItemActive(id) {
     const items = document.querySelectorAll('.navigator_item__wrapper');
     Object.keys(items).forEach((key) => {
         items[key].classList.remove('navigator__item_active');
+
+        items[key].querySelector('.navigator__item').classList.remove('navigator__item_hovered');
     });
     document.getElementById(id).classList.add('navigator__item_active');
 }
@@ -92,7 +94,31 @@ function shiftMem(direction, id) {
 }
 
 //! ! *************** function
+function executeMemChoice() {
+    const ballElement = document.getElementById('ball');
+    ballElement.removeEventListener('mouseup', executeMemChoice);
+    ball.hideBall();
+    setNavItemActive(currentMemId);
+
+    const currentMem = document.getElementById('center');
+    if (currentMem.dataset.memId < currentMemId) {
+        shiftMem('next', currentMemId);
+    } else {
+        shiftMem('prev', currentMemId);
+    }
+    shiftTitle();
+}
+
+//! ! *************** function
+function followBall() {
+    document.addEventListener('mousemove', (event) => {
+        ball.follow(event);
+    });
+}
+
+//! ! *************** function
 function navItemSChoice(ev) {
+    console.log('nav.event=', ev.type);
     if (!ev.target) {
         return;
     }
@@ -104,37 +130,29 @@ function navItemSChoice(ev) {
     ) {
         selectedNavItem = ev.target.parentNode;
     }
-
     const { id } = selectedNavItem;
-    ball.showBall(ev);
-    document.addEventListener('mousemove', (event) => {
-        ball.follow(event);
-    });
-
     if (currentMemId === id) {
         return;
     }
+
+    currentMemId = id;
+
     window.localStorage.setItem('currentMemId', id);
 
-    setNavItemActive(id);
-    currentMemId = id;
-    const currentMem = document.getElementById('center');
-    if (currentMem.dataset.memId < currentMemId) {
-        shiftMem('next', id);
-    } else {
-        shiftMem('prev', id);
-    }
-    shiftTitle();
+    ball.showBall(ev);
+    followBall();
+    const ballElement = document.getElementById('ball');
+    ballElement.addEventListener('mouseup', executeMemChoice);
+    selectedNavItem.querySelector('.navigator__item').classList.add('navigator__item_hovered');
 }
 
 //! ! *************** screenTitleSelect
 function screenTitleSelect(ev) {
-    if (ev.type === 'mousedown') {
-        ball.showBall(ev);
-        document.addEventListener('mousemove', (event) => {
-            ball.follow(event);
-        });
-    }
+    ball.showBall(ev);
+    followBall();
+    document.getElementById('ball').addEventListener('mouseup', () => {
+        ball.hideBall();
+    });
 }
 
 //! ! *************** main code
@@ -159,10 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const nav = document.querySelector('.navigator__container');
     nav.addEventListener('mousedown', navItemSChoice);
-
-    document.getElementById('ball').addEventListener('mouseup', () => {
-        ball.hideBall();
-    });
 
     const screenTitle = document.getElementById('title');
     screenTitle.addEventListener('dblclick', () => false);
