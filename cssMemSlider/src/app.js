@@ -1,5 +1,5 @@
 import { memsList, pathToMems } from './memsList.js';
-import { DivElement } from './classes/DivElement.js';
+import DivElement from './classes/DivElement.js';
 import Navigator from './classes/Navigator.js';
 import Ball from './classes/Ball.js';
 
@@ -29,9 +29,16 @@ class MemWrapper {
         screenFrame.appendChild(framePicture);
 
         const screenTitle = new DivElement('screen_title_wrapper').create();
-        const title = document.createElement('input');
-        title.type = 'text';
+        // const title = document.createElement('input');
+        // title.type = 'text';
+        // title.id = 'title';
+        const title = document.createElement('textarea');
+        // title.type = 'text';
         title.id = 'title';
+        title.maxLength = 30;
+        title.title = 'allowed up to 30 symbols';
+        title.style.resize = 'none';
+
         screenTitle.appendChild(title);
         innerContainer.appendChild(screenTitle);
 
@@ -152,6 +159,8 @@ function screenTitleSelect(ev) {
     followBall();
     document.getElementById('ball').addEventListener('mouseup', () => {
         ball.hideBall();
+        document.getElementById('ball').removeEventListener('mousemove',
+        );
     });
 }
 
