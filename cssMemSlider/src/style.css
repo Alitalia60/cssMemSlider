@@ -149,11 +149,11 @@
             margin: 3% 0 0;
             text-align: center;
             width: 20%;
-            height: 5vh;
+            height: 8%;
             display: flex;
             justify-content: space-evenly;
             position: absolute;
-            top: 47vh;
+            bottom: 6%;
             right: 2%;
         }
         
@@ -200,7 +200,7 @@
         
         .title__wrapper {
             position: absolute;
-            top: 50vh;
+            bottom: 15%;
             border: green solid 1px;
         }
         
@@ -244,4 +244,38 @@
         #mem5:checked~.title__wrapper .titles__frame #title5 {
             opacity: 1;
             transform: rotateZ(0deg);
+        }
+        
+        @media screen and (max-width: 900px) {
+            .outer__container {
+                margin-top: 5%;
+            }
+            .inner__container {
+                position: unset;
+            }
+            .label__container {
+                width: 35%;
+                position: unset;
+                margin: 5% auto;
+            }
+            .title__wrapper {
+                /* margin: auto; */
+                top: unset;
+                bottom: 50%;
+            }
+            .title__frame>input {
+                font-size: 24px;
+            }
+            .mems__wrapper {
+                height: 35vh;
+            }
+        }
+        
+        @media screen and (max-width: 560px) {
+            .label__container {
+                width: 60%;
+            }
+            .title__frame>input {
+                font-size: 18px;
+            }
         }
