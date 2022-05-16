@@ -1,0 +1,49 @@
+{
+    "name": "cssmemslider",
+    "version": "1.0.0",
+    "description": "css meme slider (RSSchool task)",
+    "main": "./src/app.js",
+    "scripts": {
+        "dev": "webpack --mode development",
+        "build": "webpack --mode production",
+        "watch": "webpack --watch",
+        "live": "webpack serve --open",
+        "lint": "eslint ./src/ ",
+        "lint:fix": "eslint ./src/ --fix"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Alitalia60/cssMemSlider.git"
+    },
+    "keywords": [
+        "css",
+        "mem",
+        "slider"
+    ],
+    "author": "Anrew Litvinov <lita.private@gmail.com>",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Alitalia60/cssMemSlider/issues"
+    },
+    "homepage": "https://github.com/Alitalia60/cssMemSlider#readme",
+    "devDependencies": {
+        "clean-webpack-plugin": "^4.0.0",
+        "css-loader": "^6.7.1",
+        "eslint": "^8.15.0",
+        "eslint-config-airbnb": "^19.0.4",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-prettier": "^4.0.0",
+        "file-loader": "^6.2.0",
+        "html-loader": "^3.1.0",
+        "html-webpack-plugin": "^5.5.0",
+        "install": "^0.13.0",
+        "npm": "^8.9.0",
+        "responsive-loader": "^2.3.0",
+        "sharp": "^0.30.4",
+        "style-loader": "^3.3.1",
+        "webpack": "^5.72.0",
+        "webpack-cli": "^4.9.2",
+        "webpack-dev-server": "^4.8.1"
+    }
+}

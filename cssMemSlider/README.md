@@ -1,0 +1,5 @@
+# cssMemSlider
+
+source files:  ./src
+
+
