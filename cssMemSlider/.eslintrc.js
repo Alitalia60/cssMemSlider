@@ -16,7 +16,7 @@ module.exports = {
         'linebreak-style': 0,
         'max-classes-per-file': ['error', 5],
         'import/extensions': 0,
-        indent: ['error', 4],
+        indent: 0,
         'eol-last': 0,
     },
     extends: 'airbnb-base',

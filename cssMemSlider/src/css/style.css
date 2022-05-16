@@ -10,6 +10,7 @@ body {
 
 .outer__container {
     width: 80%;
+    max-width: 1200px;
     height: 60vh;
     margin: 10% auto;
     background-color: rgb(253, 253, 253);
@@ -126,7 +127,11 @@ body {
 .navigator_item__wrapper:hover>.navigator__item {
     border-color: rgb(255, 255, 212);
     background-color: rgb(255, 255, 212);
-    transform: translateY(-5px);
+}
+
+.navigator__item_hovered {
+    border-color: rgb(255, 255, 212);
+    background-color: rgb(255, 255, 212);
 }
 
 .navigator__item_active>.navigator__item {
